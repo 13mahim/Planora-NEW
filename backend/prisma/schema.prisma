@@ -1,0 +1,184 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Matches frontend UserRole type: "admin" | "user"
+enum UserRole {
+  admin
+  user
+}
+
+// Matches frontend Participant.status
+enum ParticipantStatus {
+  pending
+  approved
+  rejected
+  banned
+}
+
+// Matches frontend Participant.paymentStatus
+enum PaymentStatus {
+  unpaid
+  paid
+}
+
+// Matches frontend Invitation.status
+enum InvitationStatus {
+  pending
+  accepted
+  declined
+}
+
+// Matches frontend Event.status
+enum EventStatus {
+  upcoming
+  ongoing
+  completed
+  cancelled
+}
+
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  password    String
+  displayName String
+  photoURL    String?
+  role        UserRole @default(user)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  events       Event[]
+  participants Participant[]
+  reviews      Review[]
+  sentInvitations     Invitation[] @relation("SentInvitations")
+  receivedInvitations Invitation[] @relation("ReceivedInvitations")
+  payments     Payment[]
+  notifications Notification[]
+
+  @@index([email])
+}
+
+model Event {
+  id              String      @id @default(uuid())
+  title           String
+  description     String
+  date            String      // stored as string to match frontend "Oct 24, 2026" format
+  time            String
+  venue           String
+  organizerId     String
+  organizerName   String
+  isPublic        Boolean     @default(true)
+  isFree          Boolean     @default(true)
+  registrationFee Float       @default(0)
+  category        String      @default("General")
+  imageUrl        String?
+  status          EventStatus @default(upcoming)
+  isFeatured      Boolean     @default(false)
+  avgRating       Float?
+  reviewsCount    Int         @default(0)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  organizer    User          @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+  participants Participant[]
+  reviews      Review[]
+  invitations  Invitation[]
+  payments     Payment[]
+
+  @@index([organizerId])
+  @@index([isPublic])
+  @@index([status])
+}
+
+model Participant {
+  id            String            @id @default(uuid())
+  eventId       String
+  userId        String
+  userName      String
+  userEmail     String
+  status        ParticipantStatus @default(pending)
+  paymentStatus PaymentStatus     @default(unpaid)
+  joinedAt      DateTime          @default(now())
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId])
+  @@index([eventId])
+  @@index([userId])
+}
+
+model Invitation {
+  id         String           @id @default(uuid())
+  eventId    String
+  eventTitle String
+  hostId     String
+  hostName   String
+  inviteeId  String
+  inviteeEmail String
+  status     InvitationStatus @default(pending)
+  createdAt  DateTime         @default(now())
+
+  event   Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  host    User  @relation("SentInvitations", fields: [hostId], references: [id], onDelete: Cascade)
+  invitee User  @relation("ReceivedInvitations", fields: [inviteeId], references: [id], onDelete: Cascade)
+
+  @@unique([hostId, inviteeId, eventId])
+  @@index([inviteeId])
+  @@index([eventId])
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  eventId    String
+  eventTitle String
+  userId     String
+  userName   String
+  rating     Int
+  comment    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId])
+  @@index([eventId])
+  @@index([userId])
+}
+
+model Payment {
+  id              String   @id @default(uuid())
+  userId          String
+  eventId         String
+  amount          Float
+  stripeSessionId String?  @unique
+  stripePaymentId String?  @unique
+  isPaid          Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([eventId])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
