@@ -89,30 +89,6 @@ npm run dev
 # App runs on http://localhost:3000
 ```
 
----
-
-## Environment Variables
-
-### Backend `.env`
-```env
-DATABASE_URL=postgresql://user:password@host/dbname?sslmode=require
-JWT_SECRET=your_jwt_secret_min_32_chars
-JWT_REFRESH_SECRET=your_refresh_secret_min_32_chars
-CLIENT_URL=https://planora-new-frontend.vercel.app
-NODE_ENV=production
-STRIPE_SECRET_KEY=sk_test_...
-SSLCOMMERZ_STORE_ID=your_store_id
-SSLCOMMERZ_STORE_PASSWORD=your_store_password
-SSLCOMMERZ_IS_LIVE=false
-```
-
-### Frontend `.env`
-```env
-VITE_API_URL=https://planora-new-backend.vercel.app/api
-```
-
----
-
 ## API Overview
 
 **Base URL:** `https://planora-new-backend.vercel.app/api`
