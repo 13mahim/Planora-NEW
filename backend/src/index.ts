@@ -44,3 +44,5 @@ app.get("/api/health", (_, res) => res.json({ status: "ok" }));
 app.use(errorHandler);
 
 app.listen(PORT, () => console.log(`Planora backend running on http://localhost:${PORT}`));
+
+export default app;
