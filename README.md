@@ -2,6 +2,22 @@
 
 > A full-stack event management platform where users can create, join, and manage events with support for public/private events, invitations, payments, and reviews.
 
+## Test Credentials
+
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | fahad13mahim@gmail.com | 123456 |
+
+---
+
+## Live Demo
+
+| Service | URL |
+|---------|-----|
+| Frontend | [https://planora-new-frontend.vercel.app](https://planora-new-frontend.vercel.app) |
+| Backend API | [https://planora-new-backend.vercel.app/api](https://planora-new-backend.vercel.app/api) |
+| Health Check | [https://planora-new-backend.vercel.app/api/health](https://planora-new-backend.vercel.app/api/health) |
+
 ---
 
 ## Tech Stack
@@ -10,10 +26,11 @@
 |-------|-----------|
 | Frontend | React 19, Vite, TypeScript, Tailwind CSS |
 | Backend | Node.js, Express.js, TypeScript |
-| Database | PostgreSQL + Prisma ORM |
+| Database | PostgreSQL + Prisma ORM (Neon) |
 | Auth | JWT (Access + Refresh Token) + Firebase |
 | Payment | SSLCommerz |
 | Email | Nodemailer |
+| Deployment | Vercel |
 
 ---
 
@@ -28,7 +45,7 @@ planora/
 │   │   ├── context/        # Auth context
 │   │   ├── services/       # API service layer
 │   │   └── types/          # TypeScript types
-│   └── .env.example
+│   └── vercel.json
 │
 └── backend/                # Express.js API server
     ├── src/
@@ -38,7 +55,7 @@ planora/
     │   └── lib/            # Prisma, JWT, Email utilities
     ├── prisma/
     │   └── schema.prisma   # Database schema
-    └── .env.example
+    └── vercel.json
 ```
 
 ---
@@ -47,8 +64,7 @@ planora/
 
 ### Prerequisites
 - Node.js v18+
-- PostgreSQL database
-- SSLCommerz account (for payments)
+- PostgreSQL database (Neon recommended)
 
 ### Backend Setup
 
@@ -68,9 +84,9 @@ npm run dev
 cd frontend
 npm install
 cp .env.example .env
-# Fill in your VITE_API_URL, Firebase config, etc.
+# Set VITE_API_URL=http://localhost:5000/api
 npm run dev
-# App runs on http://localhost:5173
+# App runs on http://localhost:3000
 ```
 
 ---
@@ -79,39 +95,42 @@ npm run dev
 
 ### Backend `.env`
 ```env
-DATABASE_URL=postgresql://user:password@localhost:5432/planora
-JWT_SECRET=your_jwt_secret
-JWT_REFRESH_SECRET=your_refresh_secret
-EMAIL_USER=your_email@gmail.com
-EMAIL_PASS=your_email_password
+DATABASE_URL=postgresql://user:password@host/dbname?sslmode=require
+JWT_SECRET=your_jwt_secret_min_32_chars
+JWT_REFRESH_SECRET=your_refresh_secret_min_32_chars
+CLIENT_URL=https://planora-new-frontend.vercel.app
+NODE_ENV=production
+STRIPE_SECRET_KEY=sk_test_...
 SSLCOMMERZ_STORE_ID=your_store_id
-SSLCOMMERZ_STORE_PASS=your_store_pass
+SSLCOMMERZ_STORE_PASSWORD=your_store_password
+SSLCOMMERZ_IS_LIVE=false
 ```
 
 ### Frontend `.env`
 ```env
-VITE_API_URL=http://localhost:5000/api
-VITE_FIREBASE_API_KEY=your_firebase_key
-VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_API_URL=https://planora-new-backend.vercel.app/api
 ```
 
 ---
 
 ## API Overview
 
-**Base URL:** `http://localhost:5000/api`
+**Base URL:** `https://planora-new-backend.vercel.app/api`
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
+| GET | `/health` | Health check |
 | POST | `/auth/register` | Register new user |
 | POST | `/auth/login` | Login & get tokens |
+| POST | `/auth/refresh` | Refresh access token |
 | GET | `/events` | Get all public events |
 | POST | `/events` | Create new event |
-| POST | `/events/:id/join` | Join an event |
+| GET | `/events/:id` | Get event details |
+| POST | `/participants/:eventId/join` | Join an event |
 | GET | `/invitations` | Get user invitations |
-| POST | `/payment/init` | Initialize payment |
 | POST | `/reviews` | Submit a review |
+| GET | `/admin/events` | Admin — all events |
+| GET | `/admin/users` | Admin — all users |
 
 ---
 
@@ -136,6 +155,7 @@ VITE_FIREBASE_PROJECT_ID=your_project_id
 - Review & rating system
 - Admin panel for platform management
 - Real-time notifications
+- Fully deployed on Vercel
 
 ---
 
