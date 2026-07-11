@@ -15,6 +15,9 @@ import adminRoutes from "./routes/admin.routes";
 import notificationRoutes from "./routes/notification.routes";
 import sslcommerzRoutes from "./routes/sslcommerz.routes";
 
+import statsRoutes from "./routes/stats.routes";
+import contactRoutes from "./routes/contact.routes";
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -24,7 +27,6 @@ app.use(cors({
 }));
 app.use(morgan("dev"));
 
-// Stripe webhook needs raw body — must be before express.json()
 app.use("/api/payment/webhook", express.raw({ type: "application/json" }));
 app.use(express.json());
 
@@ -37,6 +39,8 @@ app.use("/api/payment", paymentRoutes);
 app.use("/api/payment/ssl", sslcommerzRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/stats", statsRoutes);
+app.use("/api/contact", contactRoutes);
 
 app.get("/api/health", (_, res) => res.json({ status: "ok" }));
 

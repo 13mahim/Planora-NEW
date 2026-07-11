@@ -79,12 +79,12 @@ export const deleteEvent = async (req: AuthRequest, res: Response, next: NextFun
   } catch (err) { next(err); }
 };
 
-// GET /api/events?isPublic=true&search=...&filter=public-free
+// GET /api/events?search=...&filter=...&category=...&sortBy=...&page=...&limit=...
 export const getPublicEvents = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { search, filter } = req.query;
+    const { search, filter, category, sortBy, page = "1", limit = "8" } = req.query;
 
-    const where: any = { isPublic: true };
+    const where: any = {};
 
     if (search) {
       where.OR = [
@@ -93,17 +93,32 @@ export const getPublicEvents = async (req: Request, res: Response, next: NextFun
       ];
     }
 
-    // filter matches frontend filter ids: "public-free" | "public-paid" | "private-free" | "private-paid"
     if (filter === "public-free") { where.isPublic = true; where.isFree = true; }
     else if (filter === "public-paid") { where.isPublic = true; where.isFree = false; }
     else if (filter === "private-free") { where.isPublic = false; where.isFree = true; }
     else if (filter === "private-paid") { where.isPublic = false; where.isFree = false; }
+    else { where.isPublic = true; }
 
-    const events = await prisma.event.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-    });
-    res.json(events.map(formatEvent));
+    if (category && category !== "all") {
+      where.category = { equals: category as string, mode: "insensitive" };
+    }
+
+    let orderBy: any = { createdAt: "desc" };
+    if (sortBy === "oldest") orderBy = { createdAt: "asc" };
+    else if (sortBy === "price-low") orderBy = { registrationFee: "asc" };
+    else if (sortBy === "price-high") orderBy = { registrationFee: "desc" };
+    else if (sortBy === "rating") orderBy = { avgRating: "desc" };
+
+    const pageNum = Math.max(1, parseInt(page as string) || 1);
+    const limitNum = Math.min(50, parseInt(limit as string) || 8);
+    const skip = (pageNum - 1) * limitNum;
+
+    const [events, total] = await Promise.all([
+      prisma.event.findMany({ where, orderBy, skip, take: limitNum }),
+      prisma.event.count({ where }),
+    ]);
+
+    res.json({ events: events.map(formatEvent), total, page: pageNum, limit: limitNum });
   } catch (err) { next(err); }
 };
 

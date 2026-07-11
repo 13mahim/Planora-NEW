@@ -101,6 +101,15 @@ export function EventDetails() {
 
   const isOwner = profile?.uid === event?.organizerId;
   const avgRating = reviews.length > 0 ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1) : "0.0";
+  const [relatedEvents, setRelatedEvents] = useState<Event[]>([]);
+
+  useEffect(() => {
+    if (!event) return;
+    eventService.getPublicEvents(undefined, undefined).then((all: any) => {
+      const related = (all.events || all).filter((e: Event) => e.id !== event.id && e.category === event.category).slice(0, 4);
+      setRelatedEvents(related);
+    }).catch(() => {});
+  }, [event]);
 
   const getJoinButtonText = () => {
     if (!event) return "";
@@ -326,6 +335,27 @@ export function EventDetails() {
           </div>
         </div>
       </div>
+    </div>
+      {/* Related Events */}
+      {relatedEvents.length > 0 && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-neutral-100 dark:border-neutral-800">
+          <h2 className="text-2xl font-bold text-neutral-900 dark:text-white mb-8">Related Events</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {relatedEvents.map((re) => (
+              <Link key={re.id} to={`/events/${re.id}`} className="group bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-100 dark:border-neutral-800 overflow-hidden hover:shadow-xl transition-all duration-300">
+                <div className="h-40 overflow-hidden">
+                  <img src={re.imageUrl || `https://picsum.photos/seed/${re.id}/400/300`} alt={re.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" referrerPolicy="no-referrer" />
+                </div>
+                <div className="p-4">
+                  <p className="text-xs text-neutral-400 mb-1 flex items-center gap-1"><Calendar size={10} />{re.date}</p>
+                  <h3 className="font-bold text-neutral-900 dark:text-white text-sm group-hover:text-orange-600 transition-colors line-clamp-2">{re.title}</h3>
+                  <p className="text-xs text-neutral-500 mt-1">{re.isFree ? "Free" : `$${re.registrationFee}`}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
