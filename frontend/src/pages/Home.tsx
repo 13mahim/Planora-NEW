@@ -1,11 +1,104 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Calendar, User, ArrowRight, Star, Shield, Zap, Users, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
+import { Calendar, User, ArrowRight, Star, Shield, Zap, Users, CheckCircle2, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { cn, formatCurrency } from "../lib/utils";
 import { eventService } from "../services/eventService";
 import { Event } from "../types";
 import api from "../services/api";
+
+// ─── EVENT SLIDER COMPONENT ───────────────────────────────────────────────
+function EventSlider({ events }: { events: Event[] }) {
+  const [current, setCurrent] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const itemsPerSlide = 4;
+  const totalSlides = Math.ceil(events.length / itemsPerSlide);
+
+  useEffect(() => {
+    if (isPaused) return;
+    timerRef.current = setInterval(() => {
+      setCurrent(prev => (prev + 1) % totalSlides);
+    }, 3500);
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [isPaused, totalSlides]);
+
+  const prev = () => { setCurrent(c => (c - 1 + totalSlides) % totalSlides); };
+  const next = () => { setCurrent(c => (c + 1) % totalSlides); };
+  const visibleEvents = events.slice(current * itemsPerSlide, current * itemsPerSlide + itemsPerSlide);
+
+  return (
+    <div
+      className="relative"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={current}
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -40 }}
+          transition={{ duration: 0.4 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        >
+          {visibleEvents.map((event) => (
+            <div key={event.id} className="group bg-white dark:bg-neutral-900 rounded-3xl border border-neutral-100 dark:border-neutral-800 overflow-hidden hover:shadow-2xl hover:shadow-neutral-200 dark:hover:shadow-neutral-900 transition-all duration-500">
+              <div className="relative h-48 overflow-hidden">
+                <img
+                  src={event.imageUrl || `https://picsum.photos/seed/${event.id}/600/400`}
+                  alt={event.title}
+                  loading="lazy"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  referrerPolicy="no-referrer"
+                />
+                <div className="absolute top-3 right-3 flex gap-1.5">
+                  <span className={cn("px-2 py-1 rounded-full text-xs font-bold shadow-sm", event.isFree ? "bg-emerald-500 text-white" : "bg-orange-500 text-white")}>
+                    {event.isFree ? "Free" : formatCurrency(event.registrationFee)}
+                  </span>
+                </div>
+                <div className="absolute inset-0 bg-linear-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+              <div className="p-5">
+                <div className="flex items-center space-x-2 text-neutral-400 text-xs font-medium mb-2">
+                  <Calendar size={12} /><span>{event.date}</span>
+                </div>
+                <h3 className="text-base font-bold text-neutral-900 dark:text-white mb-1 group-hover:text-orange-600 transition-colors line-clamp-2">{event.title}</h3>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-4 flex items-center gap-1">
+                  <User size={10} />By {event.organizerName}
+                </p>
+                <Link to={`/events/${event.id}`} className="w-full py-2.5 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-white text-sm font-bold rounded-xl flex items-center justify-center space-x-2 group-hover:bg-orange-600 group-hover:text-white transition-all">
+                  <span>View Details</span><ArrowRight size={14} />
+                </Link>
+              </div>
+            </div>
+          ))}
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Controls */}
+      {totalSlides > 1 && (
+        <div className="flex items-center justify-center gap-4 mt-8">
+          <button onClick={prev} className="p-3 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-full text-neutral-600 dark:text-neutral-300 hover:border-orange-500 hover:text-orange-600 transition-all shadow-sm">
+            <ChevronLeft size={18} />
+          </button>
+          <div className="flex gap-2">
+            {Array.from({ length: totalSlides }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrent(i)}
+                className={cn("rounded-full transition-all duration-300", i === current ? "w-8 h-3 bg-orange-600" : "w-3 h-3 bg-neutral-300 dark:bg-neutral-600 hover:bg-orange-300")}
+              />
+            ))}
+          </div>
+          <button onClick={next} className="p-3 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-full text-neutral-600 dark:text-neutral-300 hover:border-orange-500 hover:text-orange-600 transition-all shadow-sm">
+            <ChevronRight size={18} />
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export function Home() {
   const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
@@ -146,24 +239,38 @@ export function Home() {
       </section>
 
       {/* ─── DYNAMIC STATS ─────────────────────────────────────────────────── */}
-      <section className="bg-orange-600 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+      <section className="relative py-20 overflow-hidden">
+        <div className="absolute inset-0 bg-linear-to-br from-orange-600 via-orange-500 to-orange-700" />
+        <div className="absolute inset-0 opacity-10" style={{backgroundImage: "radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)", backgroundSize: "40px 40px"}} />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-white mb-2">Trusted by Event Lovers</h2>
+            <p className="text-orange-100 text-sm">Real numbers from our growing community</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { value: counter.events || stats.totalEvents, label: "Events Created", suffix: "+" },
-              { value: counter.users || stats.totalUsers, label: "Active Members", suffix: "+" },
-              { value: counter.reviews || stats.totalReviews, label: "Reviews Posted", suffix: "+" },
+              { value: counter.events || stats.totalEvents, label: "Events Created", suffix: "+", icon: "🎪", desc: "and growing every day" },
+              { value: counter.users || stats.totalUsers, label: "Active Members", suffix: "+", icon: "👥", desc: "joined our community" },
+              { value: counter.reviews || stats.totalReviews, label: "Reviews Posted", suffix: "+", icon: "⭐", desc: "from satisfied attendees" },
             ].map((s) => (
-              <motion.div key={s.label} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-                <p className="text-5xl font-bold text-white">{s.value}{s.suffix}</p>
-                <p className="text-orange-100 font-medium mt-2 uppercase tracking-widest text-sm">{s.label}</p>
+              <motion.div
+                key={s.label}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-3xl p-8 text-center hover:bg-white/20 transition-all duration-300"
+              >
+                <div className="text-4xl mb-4">{s.icon}</div>
+                <p className="text-6xl font-black text-white tracking-tight">{s.value}<span className="text-orange-200">{s.suffix}</span></p>
+                <p className="text-white font-bold text-lg mt-2 uppercase tracking-widest">{s.label}</p>
+                <p className="text-orange-200 text-sm mt-1">{s.desc}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ─── UPCOMING EVENTS ───────────────────────────────────────────────── */}
+      {/* ─── UPCOMING EVENTS SLIDER ────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="flex justify-between items-end mb-12">
           <div>
@@ -189,29 +296,7 @@ export function Home() {
             <Link to="/dashboard/my-events" className="mt-4 inline-block px-6 py-3 bg-orange-600 text-white font-bold rounded-2xl hover:bg-orange-700 transition-all">Create Event</Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {upcomingEvents.slice(0, 8).map((event, idx) => (
-              <motion.div key={event.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: idx * 0.05 }}
-                className="group bg-white dark:bg-neutral-900 rounded-3xl border border-neutral-100 dark:border-neutral-800 overflow-hidden hover:shadow-2xl hover:shadow-neutral-200 dark:hover:shadow-neutral-900 transition-all duration-500">
-                <div className="relative h-48 overflow-hidden">
-                  <img src={event.imageUrl || `https://picsum.photos/seed/${event.id}/600/400`} alt={event.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
-                  <div className="absolute top-3 right-3">
-                    <span className={cn("px-2 py-1 rounded-full text-xs font-bold shadow-sm", event.isFree ? "bg-emerald-500 text-white" : "bg-orange-500 text-white")}>
-                      {event.isFree ? "Free" : formatCurrency(event.registrationFee)}
-                    </span>
-                  </div>
-                </div>
-                <div className="p-5">
-                  <div className="flex items-center space-x-2 text-neutral-400 text-xs font-medium mb-2"><Calendar size={12} /><span>{event.date}</span></div>
-                  <h3 className="text-base font-bold text-neutral-900 dark:text-white mb-1 group-hover:text-orange-600 transition-colors line-clamp-2">{event.title}</h3>
-                  <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-4">By {event.organizerName}</p>
-                  <Link to={`/events/${event.id}`} className="w-full py-2.5 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-white text-sm font-bold rounded-xl flex items-center justify-center space-x-2 group-hover:bg-orange-600 group-hover:text-white transition-all">
-                    <span>View Details</span><ArrowRight size={14} />
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          <EventSlider events={upcomingEvents} />
         )}
       </section>
 
