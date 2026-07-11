@@ -335,7 +335,7 @@ export function EventDetails() {
           </div>
         </div>
       </div>
-    </div>
+
       {/* Related Events */}
       {relatedEvents.length > 0 && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-neutral-100 dark:border-neutral-800">

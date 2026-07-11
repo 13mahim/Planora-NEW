@@ -180,7 +180,7 @@ function DashboardOverview() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat) => (
           <Link key={stat.name} to={stat.href}
-            className="bg-white dark:bg-neutral-900 p-6 rounded-[2rem] border border-neutral-100 dark:border-neutral-800 shadow-sm hover:shadow-lg hover:border-orange-200 dark:hover:border-orange-800 transition-all">
+            className="bg-white dark:bg-neutral-900 p-6 rounded-4xl border border-neutral-100 dark:border-neutral-800 shadow-sm hover:shadow-lg hover:border-orange-200 dark:hover:border-orange-800 transition-all">
             <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center mb-4", stat.color)}><stat.icon size={20} /></div>
             <p className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-1">{stat.name}</p>
             <p className="text-3xl font-bold text-neutral-900 dark:text-white">{stat.value}</p>
@@ -190,7 +190,7 @@ function DashboardOverview() {
 
       {/* Bar + Pie Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white dark:bg-neutral-900 p-6 rounded-[2rem] border border-neutral-100 dark:border-neutral-800 shadow-sm">
+        <div className="lg:col-span-2 bg-white dark:bg-neutral-900 p-6 rounded-4xl border border-neutral-100 dark:border-neutral-800 shadow-sm">
           <h3 className="text-lg font-bold text-neutral-900 dark:text-white mb-6">Activity Overview</h3>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={barData.length > 0 ? barData : [{ month: "Jan", events: 0, joined: 0 }]}>
@@ -205,7 +205,7 @@ function DashboardOverview() {
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white dark:bg-neutral-900 p-6 rounded-[2rem] border border-neutral-100 dark:border-neutral-800 shadow-sm">
+        <div className="bg-white dark:bg-neutral-900 p-6 rounded-4xl border border-neutral-100 dark:border-neutral-800 shadow-sm">
           <h3 className="text-lg font-bold text-neutral-900 dark:text-white mb-6">Event Status</h3>
           {pieData.length > 0 ? (
             <ResponsiveContainer width="100%" height={220}>
@@ -224,7 +224,7 @@ function DashboardOverview() {
       </div>
 
       {/* Line Chart */}
-      <div className="bg-white dark:bg-neutral-900 p-6 rounded-[2rem] border border-neutral-100 dark:border-neutral-800 shadow-sm">
+      <div className="bg-white dark:bg-neutral-900 p-6 rounded-4xl border border-neutral-100 dark:border-neutral-800 shadow-sm">
         <h3 className="text-lg font-bold text-neutral-900 dark:text-white mb-6">Growth Trend</h3>
         <ResponsiveContainer width="100%" height={200}>
           <LineChart data={barData.length > 0 ? barData : [{ month: "Jan", events: 0, joined: 0 }]}>
@@ -241,7 +241,7 @@ function DashboardOverview() {
 
       {/* Recent + Upcoming */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-neutral-900 p-6 rounded-[2rem] border border-neutral-100 dark:border-neutral-800 shadow-sm">
+        <div className="bg-white dark:bg-neutral-900 p-6 rounded-4xl border border-neutral-100 dark:border-neutral-800 shadow-sm">
           <h3 className="text-lg font-bold text-neutral-900 dark:text-white mb-6">Recent Activity</h3>
           <div className="space-y-4">
             {recentEvents.length > 0 ? recentEvents.map((e) => (
@@ -256,7 +256,7 @@ function DashboardOverview() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-neutral-900 p-6 rounded-[2rem] border border-neutral-100 dark:border-neutral-800 shadow-sm">
+        <div className="bg-white dark:bg-neutral-900 p-6 rounded-4xl border border-neutral-100 dark:border-neutral-800 shadow-sm">
           <h3 className="text-lg font-bold text-neutral-900 dark:text-white mb-6">Upcoming Events</h3>
           <div className="space-y-4">
             {recentEvents.length > 0 ? recentEvents.map((e) => (
@@ -278,7 +278,7 @@ function DashboardOverview() {
       </div>
 
       {joinedEvents.length > 0 && (
-        <div className="bg-white dark:bg-neutral-900 p-6 rounded-[2rem] border border-neutral-100 dark:border-neutral-800 shadow-sm">
+        <div className="bg-white dark:bg-neutral-900 p-6 rounded-4xl border border-neutral-100 dark:border-neutral-800 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-bold text-neutral-900 dark:text-white">Events I Joined</h3>
             <Bell size={18} className="text-orange-600" />
@@ -302,7 +302,7 @@ function DashboardOverview() {
       )}
 
       {notifications.length > 0 && (
-        <div className="bg-white dark:bg-neutral-900 p-6 rounded-[2rem] border border-neutral-100 dark:border-neutral-800 shadow-sm">
+        <div className="bg-white dark:bg-neutral-900 p-6 rounded-4xl border border-neutral-100 dark:border-neutral-800 shadow-sm">
           <h3 className="text-lg font-bold text-neutral-900 dark:text-white mb-6">Notifications</h3>
           <div className="space-y-3">
             {notifications.map((n: any) => (

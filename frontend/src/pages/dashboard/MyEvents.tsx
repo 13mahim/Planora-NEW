@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2, X, Calendar as CalendarIcon, MapPin, DollarSign, Globe, Lock, Users, CheckCircle, XCircle, Ban } from "lucide-react";
 import { cn, formatCurrency } from "../../lib/utils";
 import { useAuth } from "../../context/AuthContext";
@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "motion/react";
 import { Event, Participant } from "../../types";
 
-// ─── EventForm outside MyEvents to prevent re-mount on every keystroke ───────
+// --- EventForm outside MyEvents to prevent re-mount on every keystroke -------
 interface FormData {
   title: string; description: string; date: string; time: string;
   venue: string; isPublic: boolean; isFree: boolean; registrationFee: number; category: string;
@@ -115,7 +115,7 @@ function EventForm({ formData, setFormData, onSubmit, submitLabel, submitting }:
   );
 }
 
-// ─── Main Component ───────────────────────────────────────────────────────────
+// --- Main Component -----------------------------------------------------------
 const defaultForm: FormData = {
   title: "", description: "", date: "", time: "",
   venue: "", isPublic: true, isFree: true, registrationFee: 0, category: "General",
@@ -242,7 +242,7 @@ export function MyEvents() {
               </div>
               <h3 className="text-xl font-bold text-neutral-900 mb-2">{event.title}</h3>
               <div className="space-y-2 mb-6">
-                <div className="flex items-center space-x-2 text-neutral-500 text-sm"><CalendarIcon size={14} className="text-orange-600" /><span>{event.date} · {event.time}</span></div>
+                <div className="flex items-center space-x-2 text-neutral-500 text-sm"><CalendarIcon size={14} className="text-orange-600" /><span>{event.date} � {event.time}</span></div>
                 <div className="flex items-center space-x-2 text-neutral-500 text-sm"><MapPin size={14} className="text-orange-600" /><span>{event.venue}</span></div>
               </div>
               <div className="flex space-x-2">

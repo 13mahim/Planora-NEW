@@ -52,7 +52,7 @@ export function Contact() {
               { icon: Phone, title: "Call Us", value: "+880 1234-567890", sub: "Mon–Fri, 9am–6pm" },
               { icon: MapPin, title: "Our Office", value: "Dhaka, Bangladesh", sub: "Visit by appointment" },
             ].map((item) => (
-              <div key={item.title} className="bg-white dark:bg-neutral-900 p-6 rounded-[2rem] border border-neutral-100 dark:border-neutral-800 flex items-start space-x-4 shadow-sm">
+              <div key={item.title} className="bg-white dark:bg-neutral-900 p-6 rounded-4xl border border-neutral-100 dark:border-neutral-800 flex items-start space-x-4 shadow-sm">
                 <div className="w-12 h-12 bg-orange-50 dark:bg-orange-900/30 text-orange-600 rounded-2xl flex items-center justify-center shrink-0">
                   <item.icon size={20} />
                 </div>

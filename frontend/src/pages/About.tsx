@@ -42,7 +42,7 @@ export function About() {
             { icon: Star, value: "5.0", label: "Average Rating" },
             { icon: Shield, value: "100%", label: "Secure Payments" },
           ].map((s) => (
-            <div key={s.label} className="bg-white dark:bg-neutral-900 p-8 rounded-[2rem] border border-neutral-100 dark:border-neutral-800 text-center shadow-sm">
+            <div key={s.label} className="bg-white dark:bg-neutral-900 p-8 rounded-4xl border border-neutral-100 dark:border-neutral-800 text-center shadow-sm">
               <s.icon size={28} className="text-orange-600 mx-auto mb-4" />
               <p className="text-3xl font-bold text-neutral-900 dark:text-white">{s.value}</p>
               <p className="text-sm text-neutral-500 dark:text-neutral-400 font-medium mt-1">{s.label}</p>
@@ -68,7 +68,7 @@ export function About() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             {values.map((v) => (
-              <div key={v.title} className="bg-white dark:bg-neutral-900 p-6 rounded-[2rem] border border-neutral-100 dark:border-neutral-800 shadow-sm">
+              <div key={v.title} className="bg-white dark:bg-neutral-900 p-6 rounded-4xl border border-neutral-100 dark:border-neutral-800 shadow-sm">
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 ${v.color}`}>
                   <v.icon size={22} />
                 </div>
@@ -89,7 +89,7 @@ export function About() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
             {team.map((member) => (
-              <div key={member.name} className="bg-neutral-800/50 border border-neutral-700 p-8 rounded-[2rem] text-center">
+              <div key={member.name} className="bg-neutral-800/50 border border-neutral-700 p-8 rounded-4xl text-center">
                 <div className="w-20 h-20 bg-orange-600 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4">
                   {member.avatar}
                 </div>

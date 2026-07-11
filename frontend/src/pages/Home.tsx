@@ -100,7 +100,7 @@ export function Home() {
             className="w-full h-full object-cover opacity-10 dark:opacity-5"
             referrerPolicy="no-referrer"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-neutral-50/0 via-neutral-50/60 to-neutral-50 dark:from-neutral-950/0 dark:via-neutral-950/60 dark:to-neutral-950" />
+          <div className="absolute inset-0 bg-linear-to-b from-neutral-50/0 via-neutral-50/60 to-neutral-50 dark:from-neutral-950/0 dark:via-neutral-950/60 dark:to-neutral-950" />
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-20">
           <div className="max-w-3xl">
@@ -270,7 +270,7 @@ export function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((t, idx) => (
               <motion.div key={t.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: idx * 0.1 }}
-                className="bg-white dark:bg-neutral-900 p-8 rounded-[2rem] border border-neutral-100 dark:border-neutral-800 shadow-sm">
+                className="bg-white dark:bg-neutral-900 p-8 rounded-4xl border border-neutral-100 dark:border-neutral-800 shadow-sm">
                 <div className="flex text-orange-500 mb-4">
                   {Array.from({ length: t.rating }).map((_, i) => <Star key={i} size={16} fill="currentColor" />)}
                 </div>
