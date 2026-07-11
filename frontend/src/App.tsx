@@ -8,7 +8,7 @@ import {
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { Home } from "./pages/Home";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { Toaster } from "sonner";
 
@@ -29,6 +29,14 @@ function PageLoader() {
   );
 }
 
+// ─── PROTECTED ROUTE ───────────────────────────────────────────────────────
+function PrivateRoute({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth();
+  if (loading) return <PageLoader />;
+  if (!user) return <Navigate to="/login" replace />;
+  return <>{children}</>;
+}
+
 export default function App() {
   return (
     <ThemeProvider>
@@ -42,7 +50,7 @@ export default function App() {
                   <Route path="/" element={<Home />} />
                   <Route path="/events" element={<Events />} />
                   <Route path="/events/:id" element={<EventDetails />} />
-                  <Route path="/dashboard/*" element={<Dashboard />} />
+                  <Route path="/dashboard/*" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/signup" element={<Signup />} />
                   <Route path="/about" element={<About />} />

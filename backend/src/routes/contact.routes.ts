@@ -10,9 +10,19 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
       res.status(400).json({ message: "Name, email, and message are required." });
       return;
     }
-    // Store in notifications table as a workaround (no Contact model needed)
-    // Just return success - data logged server-side
-    console.log("[Contact Form]", { name, email, subject, message, time: new Date().toISOString() });
+
+    // Find admin user to send notification to
+    const admin = await prisma.user.findFirst({ where: { role: "admin" } });
+    if (admin) {
+      await prisma.notification.create({
+        data: {
+          userId: admin.id,
+          title: `Contact Form: ${subject || "New Message"} — from ${name}`,
+          message: `${email}: ${message.substring(0, 200)}`,
+        },
+      });
+    }
+
     res.json({ message: "Message received. We'll get back to you within 24 hours." });
   } catch (err) { next(err); }
 });
