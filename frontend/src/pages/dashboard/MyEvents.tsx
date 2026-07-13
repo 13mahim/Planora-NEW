@@ -22,42 +22,92 @@ interface EventFormProps {
 }
 
 function EventForm({ formData, setFormData, onSubmit, submitLabel, submitting }: EventFormProps) {
+  const inputCls = "w-full px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-bold text-neutral-900 dark:text-white placeholder:text-neutral-400";
   return (
     <form onSubmit={onSubmit} className="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="md:col-span-2 space-y-2">
           <label className="text-xs font-bold text-neutral-400 uppercase tracking-widest ml-1">Event Title</label>
-          <input
-            type="text" required
-            value={formData.title}
+          <input type="text" required value={formData.title}
             onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-            placeholder="e.g. Annual Tech Summit"
-            className="w-full px-6 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-bold"
-          />
+            placeholder="e.g. Annual Tech Summit" className={inputCls} />
         </div>
         <div className="space-y-2">
           <label className="text-xs font-bold text-neutral-400 uppercase tracking-widest ml-1">Date</label>
           <div className="relative">
             <CalendarIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" size={18} />
-            <input
-              type="date" required
-              value={formData.date}
+            <input type="date" required value={formData.date}
               onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
-              className="w-full pl-12 pr-4 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-bold"
-            />
+              className={`${inputCls} pl-12`} />
           </div>
         </div>
         <div className="space-y-2">
           <label className="text-xs font-bold text-neutral-400 uppercase tracking-widest ml-1">Time</label>
-          <input
-            type="time" required
-            value={formData.time}
+          <input type="time" required value={formData.time}
             onChange={(e) => setFormData(prev => ({ ...prev, time: e.target.value }))}
-            className="w-full px-6 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-bold"
-          />
+            className={inputCls} />
         </div>
         <div className="md:col-span-2 space-y-2">
           <label className="text-xs font-bold text-neutral-400 uppercase tracking-widest ml-1">Venue / Link</label>
+          <div className="relative">
+            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" size={18} />
+            <input type="text" required value={formData.venue}
+              onChange={(e) => setFormData(prev => ({ ...prev, venue: e.target.value }))}
+              placeholder="Physical address or online link" className={`${inputCls} pl-12`} />
+          </div>
+        </div>
+        <div className="md:col-span-2 space-y-2">
+          <label className="text-xs font-bold text-neutral-400 uppercase tracking-widest ml-1">Description</label>
+          <textarea rows={4} required value={formData.description}
+            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+            placeholder="Tell people what your event is about..."
+            className="w-full px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-neutral-900 dark:text-white placeholder:text-neutral-400 resize-none" />
+        </div>
+        <div className="space-y-4">
+          <label className="text-xs font-bold text-neutral-400 uppercase tracking-widest ml-1">Visibility</label>
+          <div className="flex space-x-4">
+            <button type="button" onClick={() => setFormData(prev => ({ ...prev, isPublic: true }))}
+              className={cn("grow py-3 rounded-xl border flex items-center justify-center space-x-2 transition-all font-semibold", formData.isPublic ? "bg-orange-50 dark:bg-orange-900/30 border-orange-500 text-orange-600" : "bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 text-neutral-400 dark:text-neutral-400")}>
+              <Globe size={18} /><span>Public</span>
+            </button>
+            <button type="button" onClick={() => setFormData(prev => ({ ...prev, isPublic: false }))}
+              className={cn("grow py-3 rounded-xl border flex items-center justify-center space-x-2 transition-all font-semibold", !formData.isPublic ? "bg-orange-50 dark:bg-orange-900/30 border-orange-500 text-orange-600" : "bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 text-neutral-400 dark:text-neutral-400")}>
+              <Lock size={18} /><span>Private</span>
+            </button>
+          </div>
+        </div>
+        <div className="space-y-4">
+          <label className="text-xs font-bold text-neutral-400 uppercase tracking-widest ml-1">Entry Fee</label>
+          <div className="flex space-x-4">
+            <button type="button" onClick={() => setFormData(prev => ({ ...prev, isFree: true, registrationFee: 0 }))}
+              className={cn("grow py-3 rounded-xl border flex items-center justify-center transition-all font-semibold", formData.isFree ? "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-500 text-emerald-600" : "bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 text-neutral-400 dark:text-neutral-400")}>
+              Free
+            </button>
+            <button type="button" onClick={() => setFormData(prev => ({ ...prev, isFree: false }))}
+              className={cn("grow py-3 rounded-xl border flex items-center justify-center transition-all font-semibold", !formData.isFree ? "bg-orange-50 dark:bg-orange-900/30 border-orange-500 text-orange-600" : "bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 text-neutral-400 dark:text-neutral-400")}>
+              Paid
+            </button>
+          </div>
+        </div>
+        {!formData.isFree && (
+          <div className="md:col-span-2 space-y-2">
+            <label className="text-xs font-bold text-neutral-400 uppercase tracking-widest ml-1">Registration Fee (USD)</label>
+            <div className="relative">
+              <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" size={18} />
+              <input type="number" required min="1" step="0.01" value={formData.registrationFee}
+                onChange={(e) => setFormData(prev => ({ ...prev, registrationFee: parseFloat(e.target.value) }))}
+                className={`${inputCls} pl-12`} />
+            </div>
+          </div>
+        )}
+      </div>
+      <button type="submit" disabled={submitting}
+        className="w-full py-4 bg-orange-600 text-white font-bold rounded-2xl shadow-xl shadow-orange-200 hover:bg-orange-700 transition-all disabled:opacity-50">
+        {submitting ? "Saving..." : submitLabel}
+      </button>
+    </form>
+  );
+}
           <div className="relative">
             <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" size={18} />
             <input
@@ -242,7 +292,7 @@ export function MyEvents() {
               </div>
               <h3 className="text-xl font-bold text-neutral-900 mb-2">{event.title}</h3>
               <div className="space-y-2 mb-6">
-                <div className="flex items-center space-x-2 text-neutral-500 text-sm"><CalendarIcon size={14} className="text-orange-600" /><span>{event.date} · {event.time}</span></div>
+                <div className="flex items-center space-x-2 text-neutral-500 text-sm"><CalendarIcon size={14} className="text-orange-600" /><span>{event.date} ï¿½ {event.time}</span></div>
                 <div className="flex items-center space-x-2 text-neutral-500 text-sm"><MapPin size={14} className="text-orange-600" /><span>{event.venue}</span></div>
               </div>
               <div className="flex space-x-2">
@@ -260,10 +310,10 @@ export function MyEvents() {
         {showCreateModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowCreateModal(false)} className="absolute inset-0 bg-neutral-900/60 backdrop-blur-sm" />
-            <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="relative w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
-              <div className="p-8 border-b border-neutral-100 flex justify-between items-center">
-                <div><h2 className="text-2xl font-bold text-neutral-900">Create New Event</h2><p className="text-sm text-neutral-500">Fill in the details to launch your event.</p></div>
-                <button onClick={() => setShowCreateModal(false)} className="p-2 hover:bg-neutral-100 rounded-full"><X size={24} /></button>
+            <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="relative w-full max-w-2xl bg-white dark:bg-neutral-900 rounded-[2.5rem] shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+              <div className="p-8 border-b border-neutral-100 dark:border-neutral-800 flex justify-between items-center">
+                <div><h2 className="text-2xl font-bold text-neutral-900 dark:text-white">Create New Event</h2><p className="text-sm text-neutral-500 dark:text-neutral-400">Fill in the details to launch your event.</p></div>
+                <button onClick={() => setShowCreateModal(false)} className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full text-neutral-600 dark:text-neutral-300"><X size={24} /></button>
               </div>
               <EventForm formData={formData} setFormData={setFormData} onSubmit={handleCreate} submitLabel="Launch Event" submitting={submitting} />
             </motion.div>
@@ -276,10 +326,10 @@ export function MyEvents() {
         {showEditModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowEditModal(false)} className="absolute inset-0 bg-neutral-900/60 backdrop-blur-sm" />
-            <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="relative w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
-              <div className="p-8 border-b border-neutral-100 flex justify-between items-center">
-                <div><h2 className="text-2xl font-bold text-neutral-900">Edit Event</h2><p className="text-sm text-neutral-500">Update your event details.</p></div>
-                <button onClick={() => setShowEditModal(false)} className="p-2 hover:bg-neutral-100 rounded-full"><X size={24} /></button>
+            <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="relative w-full max-w-2xl bg-white dark:bg-neutral-900 rounded-[2.5rem] shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+              <div className="p-8 border-b border-neutral-100 dark:border-neutral-800 flex justify-between items-center">
+                <div><h2 className="text-2xl font-bold text-neutral-900 dark:text-white">Edit Event</h2><p className="text-sm text-neutral-500 dark:text-neutral-400">Update your event details.</p></div>
+                <button onClick={() => setShowEditModal(false)} className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full text-neutral-600 dark:text-neutral-300"><X size={24} /></button>
               </div>
               <EventForm formData={formData} setFormData={setFormData} onSubmit={handleUpdate} submitLabel="Save Changes" submitting={submitting} />
             </motion.div>
@@ -292,18 +342,18 @@ export function MyEvents() {
         {showParticipantsModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowParticipantsModal(false)} className="absolute inset-0 bg-neutral-900/60 backdrop-blur-sm" />
-            <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="relative w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
-              <div className="p-8 border-b border-neutral-100 flex justify-between items-center">
-                <div><h2 className="text-2xl font-bold text-neutral-900">Participants</h2><p className="text-sm text-neutral-500">{selectedEvent?.title}</p></div>
-                <button onClick={() => setShowParticipantsModal(false)} className="p-2 hover:bg-neutral-100 rounded-full"><X size={24} /></button>
+            <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="relative w-full max-w-2xl bg-white dark:bg-neutral-900 rounded-[2.5rem] shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+              <div className="p-8 border-b border-neutral-100 dark:border-neutral-800 flex justify-between items-center">
+                <div><h2 className="text-2xl font-bold text-neutral-900 dark:text-white">Participants</h2><p className="text-sm text-neutral-500 dark:text-neutral-400">{selectedEvent?.title}</p></div>
+                <button onClick={() => setShowParticipantsModal(false)} className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full text-neutral-600 dark:text-neutral-300"><X size={24} /></button>
               </div>
               <div className="p-8 max-h-[60vh] overflow-y-auto space-y-4">
                 {participants.length === 0 ? (
                   <p className="text-neutral-400 text-center py-8">No participants yet.</p>
                 ) : participants.map((p) => (
-                  <div key={p.id} className="flex items-center justify-between p-4 bg-neutral-50 rounded-2xl">
+                  <div key={p.id} className="flex items-center justify-between p-4 bg-neutral-50 dark:bg-neutral-800 rounded-2xl">
                     <div>
-                      <p className="font-bold text-neutral-900">{p.userName}</p>
+                      <p className="font-bold text-neutral-900 dark:text-white">{p.userName}</p>
                       <p className="text-xs text-neutral-400">{p.userEmail}</p>
                       <div className="flex gap-2 mt-1">
                         <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full uppercase", p.status === "approved" ? "bg-emerald-100 text-emerald-700" : p.status === "banned" ? "bg-red-100 text-red-700" : p.status === "rejected" ? "bg-neutral-100 text-neutral-500" : "bg-yellow-100 text-yellow-700")}>{p.status}</span>
