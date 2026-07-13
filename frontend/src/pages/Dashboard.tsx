@@ -1,7 +1,7 @@
 import { Routes, Route, Link, NavLink, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Calendar, Mail, Star, Settings,
-  Plus, LogOut, User, Users, ChevronRight, ShieldAlert, Bell, Menu, X
+  Plus, LogOut, User, ChevronRight, ShieldAlert, Bell, Menu, X
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { MyEvents } from "./dashboard/MyEvents";
@@ -33,18 +33,17 @@ export function Dashboard() {
 
   const sidebarLinks = profile?.role === "admin" ? [
     { name: "Overview", href: "/dashboard", icon: LayoutDashboard, end: true },
-    { name: "Manage Events", href: "/dashboard/admin", icon: Calendar },
-    { name: "Manage Users", href: "/dashboard/admin", icon: Users },
-    { name: "My Events", href: "/dashboard/my-events", icon: Star },
-    { name: "Invitations", href: "/dashboard/invitations", icon: Mail },
-    { name: "Settings", href: "/dashboard/settings", icon: Settings },
-    { name: "Admin Panel", href: "/dashboard/admin", icon: ShieldAlert },
+    { name: "Admin Panel", href: "/dashboard/admin", icon: ShieldAlert, end: true },
+    { name: "My Events", href: "/dashboard/my-events", icon: Calendar, end: true },
+    { name: "Invitations", href: "/dashboard/invitations", icon: Mail, end: true },
+    { name: "My Reviews", href: "/dashboard/reviews", icon: Star, end: true },
+    { name: "Settings", href: "/dashboard/settings", icon: Settings, end: true },
   ] : [
     { name: "Overview", href: "/dashboard", icon: LayoutDashboard, end: true },
-    { name: "My Events", href: "/dashboard/my-events", icon: Calendar },
-    { name: "Invitations", href: "/dashboard/invitations", icon: Mail },
-    { name: "My Reviews", href: "/dashboard/reviews", icon: Star },
-    { name: "Settings", href: "/dashboard/settings", icon: Settings },
+    { name: "My Events", href: "/dashboard/my-events", icon: Calendar, end: true },
+    { name: "Invitations", href: "/dashboard/invitations", icon: Mail, end: true },
+    { name: "My Reviews", href: "/dashboard/reviews", icon: Star, end: true },
+    { name: "Settings", href: "/dashboard/settings", icon: Settings, end: true },
   ];
 
   return (
