@@ -58,32 +58,32 @@ export function MyReviews() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-neutral-900">My Reviews</h1>
-        <p className="text-neutral-500 mt-1">Manage the feedback you've shared on events.</p>
+        <h1 className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-white">My Reviews</h1>
+        <p className="text-neutral-500 dark:text-neutral-400 mt-1">Manage the feedback you've shared on events.</p>
       </div>
 
       {reviews.length === 0 ? (
-        <div className="py-24 bg-white rounded-[3rem] border border-dashed border-neutral-300 text-center">
-          <div className="w-20 h-20 bg-neutral-50 rounded-full flex items-center justify-center mx-auto mb-6 text-neutral-400"><Star size={32} /></div>
-          <h3 className="text-xl font-bold text-neutral-900 mb-2">No reviews yet</h3>
-          <p className="text-neutral-500">After attending events, you can share your experience here.</p>
+        <div className="py-24 bg-white dark:bg-neutral-900 rounded-[3rem] border border-dashed border-neutral-300 dark:border-neutral-700 text-center">
+          <div className="w-20 h-20 bg-neutral-50 dark:bg-neutral-800 rounded-full flex items-center justify-center mx-auto mb-6 text-neutral-400"><Star size={32} /></div>
+          <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">No reviews yet</h3>
+          <p className="text-neutral-500 dark:text-neutral-400">After attending events, you can share your experience here.</p>
         </div>
       ) : (
         <div className="space-y-6">
           {reviews.map((review) => (
-            <div key={review.id} className="bg-white p-8 rounded-[2.5rem] border border-neutral-100 shadow-sm hover:shadow-xl transition-all duration-500">
+            <div key={review.id} className="bg-white dark:bg-neutral-900 p-8 rounded-[2.5rem] border border-neutral-100 dark:border-neutral-800 shadow-sm hover:shadow-xl transition-all duration-500">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="text-xl font-bold text-neutral-900">{review.eventTitle}</h3>
+                  <h3 className="text-xl font-bold text-neutral-900 dark:text-white">{review.eventTitle}</h3>
                   <p className="text-xs text-neutral-400 font-medium mt-1">{new Date(review.createdAt).toLocaleDateString()}</p>
                 </div>
                 <div className="flex text-orange-500">
                   {[...Array(5)].map((_, i) => <Star key={i} size={16} fill={i < review.rating ? "currentColor" : "none"} />)}
                 </div>
               </div>
-              <p className="text-neutral-600 leading-relaxed mb-8 italic">"{review.comment}"</p>
+              <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed mb-8 italic">"{review.comment}"</p>
               <div className="flex space-x-3">
-                <button onClick={() => handleEdit(review)} className="flex items-center space-x-2 px-6 py-3 bg-neutral-900 text-white font-bold rounded-xl hover:bg-neutral-800 transition-all">
+                <button onClick={() => handleEdit(review)} className="flex items-center space-x-2 px-6 py-3 bg-neutral-900 dark:bg-neutral-700 text-white font-bold rounded-xl hover:bg-neutral-800 dark:hover:bg-neutral-600 transition-all">
                   <Edit2 size={16} /><span>Edit</span>
                 </button>
                 <button onClick={() => handleDelete(review.id)} className="flex items-center space-x-2 px-6 py-3 bg-red-50 text-red-600 font-bold rounded-xl hover:bg-red-100 transition-all">
@@ -99,10 +99,10 @@ export function MyReviews() {
         {editingReview && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setEditingReview(null)} className="absolute inset-0 bg-neutral-900/60 backdrop-blur-sm" />
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl p-8">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative w-full max-w-lg bg-white dark:bg-neutral-900 rounded-[2.5rem] shadow-2xl p-8 border border-neutral-100 dark:border-neutral-800">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-neutral-900">Edit Review</h2>
-                <button onClick={() => setEditingReview(null)} className="p-2 hover:bg-neutral-100 rounded-full"><X size={24} /></button>
+                <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">Edit Review</h2>
+                <button onClick={() => setEditingReview(null)} className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full text-neutral-500 dark:text-neutral-400"><X size={24} /></button>
               </div>
               <div className="flex space-x-2 mb-6">
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -111,7 +111,7 @@ export function MyReviews() {
                   </button>
                 ))}
               </div>
-              <textarea rows={4} value={editComment} onChange={(e) => setEditComment(e.target.value)} className="w-full px-6 py-4 bg-neutral-50 border border-neutral-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all mb-6" />
+              <textarea rows={4} value={editComment} onChange={(e) => setEditComment(e.target.value)} className="w-full px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all mb-6 placeholder:text-neutral-400" />
               <button onClick={handleUpdate} disabled={submitting} className="w-full py-4 bg-orange-600 text-white font-bold rounded-2xl hover:bg-orange-700 transition-all disabled:opacity-50">
                 {submitting ? "Saving..." : "Save Changes"}
               </button>

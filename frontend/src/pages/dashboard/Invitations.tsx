@@ -42,41 +42,41 @@ export function Invitations() {
 
   if (loading) return (
     <div className="space-y-4">
-      {Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-32 bg-neutral-100 rounded-[2.5rem] animate-pulse" />)}
+      {Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-32 bg-neutral-100 dark:bg-neutral-800 rounded-[2.5rem] animate-pulse" />)}
     </div>
   );
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-neutral-900">Pending Invitations</h1>
-        <p className="text-neutral-500 mt-1">You've been invited to these exclusive events.</p>
+        <h1 className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-white">Pending Invitations</h1>
+        <p className="text-neutral-500 dark:text-neutral-400 mt-1">You've been invited to these exclusive events.</p>
       </div>
 
       {invites.length === 0 ? (
-        <div className="py-24 bg-white rounded-[3rem] border border-dashed border-neutral-300 text-center">
-          <div className="w-20 h-20 bg-neutral-50 rounded-full flex items-center justify-center mx-auto mb-6 text-neutral-400"><Mail size={32} /></div>
-          <h3 className="text-xl font-bold text-neutral-900 mb-2">No pending invitations</h3>
-          <p className="text-neutral-500">When you're invited to private events, they'll appear here.</p>
+        <div className="py-24 bg-white dark:bg-neutral-900 rounded-[3rem] border border-dashed border-neutral-300 dark:border-neutral-700 text-center">
+          <div className="w-20 h-20 bg-neutral-50 dark:bg-neutral-800 rounded-full flex items-center justify-center mx-auto mb-6 text-neutral-400"><Mail size={32} /></div>
+          <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">No pending invitations</h3>
+          <p className="text-neutral-500 dark:text-neutral-400">When you're invited to private events, they'll appear here.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {invites.map((invite) => (
-            <div key={invite.id} className="bg-white p-8 rounded-[2.5rem] border border-neutral-100 shadow-sm hover:shadow-xl transition-all duration-500">
+            <div key={invite.id} className="bg-white dark:bg-neutral-900 p-8 rounded-[2.5rem] border border-neutral-100 dark:border-neutral-800 shadow-sm hover:shadow-xl transition-all duration-500">
               <div className="flex justify-between items-start mb-6">
                 <div className="w-12 h-12 bg-orange-100 rounded-2xl flex items-center justify-center text-orange-600"><Mail size={24} /></div>
                 <span className="px-3 py-1 bg-orange-50 text-orange-600 text-[10px] font-bold uppercase tracking-widest rounded-full">
                   {(invite as any).fee === 0 ? "Free Entry" : `Fee: ${formatCurrency((invite as any).fee || 0)}`}
                 </span>
               </div>
-              <h3 className="text-xl font-bold text-neutral-900 mb-2">{invite.eventTitle}</h3>
+              <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">{invite.eventTitle}</h3>
               <div className="space-y-3 mb-8">
-                <div className="flex items-center space-x-2 text-neutral-500 text-sm">
+                <div className="flex items-center space-x-2 text-neutral-500 dark:text-neutral-400 text-sm">
                   <User size={14} className="text-orange-600" />
-                  <span>Invited by <span className="font-bold text-neutral-700">{invite.hostName}</span></span>
+                  <span>Invited by <span className="font-bold text-neutral-700 dark:text-neutral-300">{invite.hostName}</span></span>
                 </div>
                 {(invite as any).date && (
-                  <div className="flex items-center space-x-2 text-neutral-500 text-sm">
+                  <div className="flex items-center space-x-2 text-neutral-500 dark:text-neutral-400 text-sm">
                     <Calendar size={14} className="text-orange-600" />
                     <span>{(invite as any).date}</span>
                   </div>
@@ -87,7 +87,7 @@ export function Invitations() {
                   <Check size={18} />
                   <span>{(invite as any).fee > 0 ? "Pay & Accept" : "Accept"}</span>
                 </button>
-                <button onClick={() => handleDecline(invite.id)} className="px-4 py-3 bg-neutral-50 text-neutral-400 font-bold rounded-xl hover:bg-red-50 hover:text-red-500 transition-all">
+                <button onClick={() => handleDecline(invite.id)} className="px-4 py-3 bg-neutral-50 dark:bg-neutral-800 text-neutral-400 font-bold rounded-xl hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-950 transition-all">
                   <X size={18} />
                 </button>
               </div>

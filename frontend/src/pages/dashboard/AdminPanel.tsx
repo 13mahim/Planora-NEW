@@ -57,8 +57,8 @@ export function AdminPanel() {
   return (
     <div className="space-y-12">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-neutral-900">Admin Panel</h1>
-        <p className="text-neutral-500 mt-1">Monitor all platform activity and manage resources.</p>
+        <h1 className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-white">Admin Panel</h1>
+        <p className="text-neutral-500 dark:text-neutral-400 mt-1">Monitor all platform activity and manage resources.</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -68,33 +68,33 @@ export function AdminPanel() {
           { label: "Admins", value: users.filter(u => u.role === "admin").length, color: "bg-purple-50 text-purple-600", icon: ShieldAlert, onClick: () => { setTab("users"); setFilter("admin"); } },
           { label: "Featured", value: events.filter((e: any) => e.isFeatured).length, color: "bg-emerald-50 text-emerald-600", icon: Star, onClick: () => { setTab("events"); setFilter("featured"); } },
         ].map((stat) => (
-          <button key={stat.label} onClick={stat.onClick} className="bg-white p-6 rounded-[2.5rem] border border-neutral-100 shadow-sm hover:shadow-md hover:border-orange-200 transition-all text-left cursor-pointer">
+          <button key={stat.label} onClick={stat.onClick} className="bg-white dark:bg-neutral-900 p-6 rounded-[2.5rem] border border-neutral-100 dark:border-neutral-800 shadow-sm hover:shadow-md hover:border-orange-200 transition-all text-left cursor-pointer">
             <div className={cn("w-10 h-10 rounded-2xl flex items-center justify-center mb-4", stat.color)}>
               <stat.icon size={20} />
             </div>
-            <p className="text-2xl font-bold text-neutral-900">{stat.value}</p>
-            <p className="text-xs text-neutral-400 font-bold uppercase tracking-widest mt-1">{stat.label}</p>
+            <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stat.value}</p>
+            <p className="text-xs text-neutral-400 dark:text-neutral-400 font-bold uppercase tracking-widest mt-1">{stat.label}</p>
           </button>
         ))}
       </div>
 
       <div className="flex gap-3 mb-6">
-        <button onClick={() => { setTab("events"); setFilter("all"); }} className={cn("px-6 py-3 rounded-2xl font-bold text-sm transition-all", tab === "events" ? "bg-orange-600 text-white" : "bg-white border border-neutral-200 text-neutral-600 hover:border-orange-500")}>
+        <button onClick={() => { setTab("events"); setFilter("all"); }} className={cn("px-6 py-3 rounded-2xl font-bold text-sm transition-all", tab === "events" ? "bg-orange-600 text-white" : "bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:border-orange-500")}>
           Events ({events.length})
         </button>
-        <button onClick={() => { setTab("users"); setFilter("all"); }} className={cn("px-6 py-3 rounded-2xl font-bold text-sm transition-all", tab === "users" ? "bg-orange-600 text-white" : "bg-white border border-neutral-200 text-neutral-600 hover:border-orange-500")}>
+        <button onClick={() => { setTab("users"); setFilter("all"); }} className={cn("px-6 py-3 rounded-2xl font-bold text-sm transition-all", tab === "users" ? "bg-orange-600 text-white" : "bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:border-orange-500")}>
           Users ({users.length})
         </button>
       </div>
 
       {loading ? (
-        <div className="space-y-3">{Array.from({ length: 5 }).map((_, i) => <div key={i} className="h-16 bg-neutral-100 rounded-2xl animate-pulse" />)}</div>
+        <div className="space-y-3">{Array.from({ length: 5 }).map((_, i) => <div key={i} className="h-16 bg-neutral-100 dark:bg-neutral-800 rounded-2xl animate-pulse" />)}</div>
       ) : tab === "events" ? (
-        <div className="bg-white rounded-[2.5rem] border border-neutral-100 shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-neutral-100 flex items-center justify-between">
+        <div className="bg-white dark:bg-neutral-900 rounded-[2.5rem] border border-neutral-100 dark:border-neutral-800 shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <Calendar className="text-orange-600" size={24} />
-              <h2 className="text-xl font-bold text-neutral-900">
+              <h2 className="text-xl font-bold text-neutral-900 dark:text-white">
                 {filter === "featured" ? "Featured Events" : "All Events"}
               </h2>
             </div>
@@ -107,16 +107,16 @@ export function AdminPanel() {
               </span>
             </div>
           </div>
-          <div className="divide-y divide-neutral-100 max-h-[500px] overflow-y-auto">
+          <div className="divide-y divide-neutral-100 dark:divide-neutral-800 max-h-[500px] overflow-y-auto">
             {(filter === "featured" ? events.filter((e: any) => e.isFeatured) : events).map((event: any) => (
               <div
                 key={event.id}
-                className="p-6 flex items-center justify-between hover:bg-neutral-50 transition-colors cursor-pointer"
+                className="p-6 flex items-center justify-between hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
                 onClick={() => navigate(`/events/${event.id}`)}
               >
                 <div>
-                  <p className="font-bold text-neutral-900 hover:text-orange-600 transition-colors">{event.title}</p>
-                  <p className="text-xs text-neutral-400">By {event.organizerName} · {event.date}</p>
+                  <p className="font-bold text-neutral-900 dark:text-white hover:text-orange-600 transition-colors">{event.title}</p>
+                  <p className="text-xs text-neutral-400">{`By ${event.organizerName} · ${event.date}`}</p>
                   <div className="flex gap-2 mt-1">
                     <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full uppercase", event.isPublic ? "bg-blue-50 text-blue-600" : "bg-purple-50 text-purple-600")}>{event.isPublic ? "Public" : "Private"}</span>
                     <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full uppercase", event.isFree ? "bg-emerald-50 text-emerald-600" : "bg-orange-50 text-orange-600")}>{event.isFree ? "Free" : "Paid"}</span>
@@ -132,11 +132,11 @@ export function AdminPanel() {
           </div>
         </div>
       ) : (
-        <div className="bg-white rounded-[2.5rem] border border-neutral-100 shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-neutral-100 flex items-center justify-between">
+        <div className="bg-white dark:bg-neutral-900 rounded-[2.5rem] border border-neutral-100 dark:border-neutral-800 shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <Users className="text-orange-600" size={24} />
-              <h2 className="text-xl font-bold text-neutral-900">
+              <h2 className="text-xl font-bold text-neutral-900 dark:text-white">
                 {filter === "admin" ? "Admin Users" : "All Users"}
               </h2>
             </div>
@@ -149,17 +149,17 @@ export function AdminPanel() {
               </span>
             </div>
           </div>
-          <div className="divide-y divide-neutral-100 max-h-[500px] overflow-y-auto">
+          <div className="divide-y divide-neutral-100 dark:divide-neutral-800 max-h-[500px] overflow-y-auto">
             {(filter === "admin" ? users.filter(u => u.role === "admin") : users).map((user: any) => (
-              <div key={user.uid} className="p-6 flex items-center justify-between hover:bg-neutral-50 transition-colors">
+              <div key={user.uid} className="p-6 flex items-center justify-between hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center text-orange-600 font-bold">
                     {user.displayName?.charAt(0)}
                   </div>
                   <div>
-                    <p className="font-bold text-neutral-900">{user.displayName}</p>
+                    <p className="font-bold text-neutral-900 dark:text-white">{user.displayName}</p>
                     <p className="text-xs text-neutral-400">{user.email}</p>
-                    <p className="text-xs text-neutral-300 mt-0.5">{user.eventsCount} events · {user.participationsCount} participations</p>
+                    <p className="text-xs text-neutral-400 mt-0.5">{user.eventsCount} events · {user.participationsCount} participations</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
